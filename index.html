@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatches</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    
+    .stopwatch-container {
+      text-align: center;
+      margin: 0 auto;
+    }
+    
+    .stopwatch {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    
+    .controls {
+      margin-top: 20px;
+    }
+
+    button {
+      width: 75px;
+      height: 30px;
+    }
+
+    #other-h1 {
+      margin-top: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div class="stopwatch-container">
+    <h1>
+       Andreas
+    </h1>
+    <div class="stopwatch" id="stopwatch1">00:00:00</div>
+    <div class="controls">
+      <button onclick="startStopwatch(1)">Start</button>
+      <button onclick="pauseStopwatch(1)">Pause</button>
+      <button onclick="resetStopwatch(1)">Reset</button>
+    </div>
+    <h1 id="other-h1">
+       Other
+    </h1> 
+    <div class="stopwatch" id="stopwatch2">00:00:00</div>
+    <div class="controls">
+      <button onclick="startStopwatch(2)">Start</button>
+      <button onclick="pauseStopwatch(2)">Pause</button>
+      <button onclick="resetStopwatch(2)">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    let timers = [null, null];
+    let startTime = [null, null];
+    let running = [false, false];
+
+    function startStopwatch(index) {
+      if (!running[index]) {
+        startTime[index] = Date.now() - (timers[index] || 0);
+        running[index] = true;
+        updateStopwatch(index);
+      }
+    }
+
+    function pauseStopwatch(index) {
+      running[index] = false;
+      clearTimeout(timers[index]);
+    }
+
+    function resetStopwatch(index) {
+      running[index] = false;
+      clearTimeout(timers[index]);
+      document.getElementById(`stopwatch${index}`).textContent = '00:00:00';
+    }
+
+    function updateStopwatch(index) {
+      if (running[index]) {
+        let elapsedTime = Date.now() - startTime[index];
+        let hours = Math.floor(elapsedTime / 3600000);
+        let minutes = Math.floor((elapsedTime % 3600000) / 60000);
+        let seconds = Math.floor((elapsedTime % 60000) / 1000);
+        document.getElementById(`stopwatch${index}`).textContent =
+          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        timers[index] = setTimeout(() => updateStopwatch(index), 1000);
+      }
+    }
+  </script>
+</body>
+</html>
